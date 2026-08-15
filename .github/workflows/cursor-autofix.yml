@@ -12,17 +12,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'yarn'
+          cache-dependency-path: automation/yarn.lock
       - name: Install SDK
         working-directory: automation
-        run: npm install
+        run: yarn install
       - name: Run auto-fix
         working-directory: automation
         env:
           # 用团队 Service Account key，计费归团队（在仓库 Secrets 配置）
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
           REPO_URL: ${{ github.event.repository.html_url }}
-          FAILURE_LOG: 'CI workflow 失败，见 GitHub Actions 运行详情。'
+          # workflow_run 用默认分支的 workflow 文件，需显式传出错分支给 Agent
+          TARGET_REF: ${{ github.event.workflow_run.head_branch }}
+          FAILURE_LOG: |
+            分支 ${{ github.event.workflow_run.head_branch }} 的 CI 失败。
+            提交：${{ github.event.workflow_run.head_sha }}
+            运行详情：${{ github.event.workflow_run.html_url }}
         run: node auto-fix.mjs

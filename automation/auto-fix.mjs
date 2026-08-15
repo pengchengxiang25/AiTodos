@@ -6,6 +6,9 @@ import { pickModel, requireApiKey } from "./_model.mjs";
 const apiKey = requireApiKey(); // 团队自动化用 Service Account key，计费归团队
 const repoUrl = process.env.REPO_URL;
 const failureLog = process.env.FAILURE_LOG || "(未提供失败日志)";
+// workflow_run 触发时用的是默认分支的 workflow 文件，必须显式接收出错的分支，
+// 否则 Agent 会基于 main 建工作区，看不到失败分支上的问题代码。
+const startingRef = process.env.TARGET_REF || "main";
 
 if (!repoUrl) {
   console.error("缺少 REPO_URL");
@@ -18,20 +21,22 @@ async function autoFix() {
       apiKey,
       model: await pickModel(),
       cloud: {
-        repos: [{ url: repoUrl, startingRef: "main" }],
+        repos: [{ url: repoUrl, startingRef }],
         autoCreatePR: true,
         envVars: { CI_CONTEXT: "todos-rn-auto-fix" }, // 加密、随 agent 删除
       },
     });
 
     const run = await agent.send(
-      `本仓库 CI 失败。请遵守 AGENTS.md 的四层架构与 .cursor/rules 约束，定位根因、修复并保证 ` +
-        `eslint / tsc --noEmit / jest 全部通过。失败日志：\n${failureLog}`,
+      `本仓库分支 ${startingRef} 的 CI 失败。请遵守 AGENTS.md 的四层架构与 .cursor/rules 约束，` +
+        `定位根因、修复并保证 eslint / tsc --noEmit / jest 全部通过。失败日志：\n${failureLog}`,
     );
 
     const result = await run.wait();
     const pr = result.git?.branches?.[0]?.prUrl;
-    console.log(`requestId=${result.requestId} status=${result.status} PR=${pr ?? "(无)"}`);
+    console.log(
+      `ref=${startingRef} requestId=${result.requestId} status=${result.status} PR=${pr ?? "(无)"}`,
+    );
     return pr;
   } catch (err) {
     if (err instanceof IntegrationNotConnectedError) {
