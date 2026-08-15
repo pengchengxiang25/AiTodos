@@ -10,12 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Yarn Berry 需先启用 Corepack，setup-node 的 yarn cache 才能解析 yarn.lock
+      - name: Enable Corepack
+        run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'yarn'
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install deps
         run: yarn install --immutable
       - name: Lint

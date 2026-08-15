@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'yarn'
           cache-dependency-path: automation/yarn.lock
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install SDK
         working-directory: automation
         run: yarn install
