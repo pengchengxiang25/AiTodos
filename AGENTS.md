@@ -9,7 +9,8 @@ React Native 0.76.5 + React 18.3.1 + TypeScript 的 Todo 应用，采用**四层
 - 导航：React Navigation v7 `native-stack`（路由常量见 `src/configs/routeConfig.ts`，注册见 `src/App.tsx`，用 `lazyScreen` 懒加载）。
 - Mock：MirageJS（`src/mirage/mirageServer.ts`，`App.tsx` 挂载前 `ensureMirageServer()` 注入）。
 - 网络：统一走 `src/utils/api.ts` 的 `api.get/post/patch/delete`，baseURL 见 `src/configs/apiConfig.ts`。
-- 分包：`scripts/bundle/build.js`（`npm run bundle:split:ios|android`）。
+- 包管理：**Yarn Berry 4.12**（`packageManager` 字段 + Corepack；唯一锁文件 `yarn.lock`，禁止提交 `package-lock.json`）。
+- 分包：`scripts/bundle/build.js`（`yarn bundle:split:ios|android`）。
 - 质量工具：ESLint `@react-native`、Prettier 2.8.8、Jest（preset `react-native`）。
 
 ## 四层单向依赖（不可违反）
@@ -45,7 +46,8 @@ service → domain(可选) → state(thunk → slice → selector) → presentat
 
 ## 常用命令
 
-- 起 Metro：`npm start`
-- 跑端：`npm run ios` / `npm run android`
-- 质量门：`npx eslint .` ／ `npx tsc --noEmit` ／ `npm test`
-- 分包：`npm run bundle:split:ios` / `npm run bundle:split:android`
+- 装依赖：`yarn install`（CI：`yarn install --immutable`）
+- 起 Metro：`yarn start`
+- 跑端：`yarn ios` / `yarn android`
+- 质量门：`yarn eslint .` ／ `yarn tsc --noEmit` ／ `yarn test`
+- 分包：`yarn bundle:split:ios` / `yarn bundle:split:android`

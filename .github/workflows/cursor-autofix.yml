@@ -15,9 +15,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'yarn'
+          cache-dependency-path: automation/yarn.lock
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install SDK
         working-directory: automation
-        run: npm install
+        run: yarn install
       - name: Run auto-fix
         working-directory: automation
         env:

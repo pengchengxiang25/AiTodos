@@ -6,7 +6,7 @@
 
 ```bash
 cd automation
-npm install
+yarn install
 export CURSOR_API_KEY=...   # 见根目录 .env.example
 ```
 
@@ -19,9 +19,9 @@ export CURSOR_API_KEY=...   # 见根目录 .env.example
 | `auto-fix.mjs` | cloud + autoCreatePR | CI 失败自动修复并开 PR | 项目4 CI 修复 |
 
 ```bash
-npm run summarize
-npm run gen-slice -- "Comment 评论功能：列表 + 新增"
-REPO_URL=https://github.com/<org>/TodosReactNative FAILURE_LOG="..." npm run auto-fix
+yarn summarize
+yarn gen-slice -- "Comment 评论功能：列表 + 新增"
+REPO_URL=https://github.com/<org>/TodosReactNative FAILURE_LOG="..." yarn auto-fix
 ```
 
 ## 要点

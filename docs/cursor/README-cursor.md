@@ -21,7 +21,7 @@
 | Commands | 可复用提示词（`/` 触发）| `.cursor/commands/*.md` |
 | Subagents | 独立上下文子助手 | `.cursor/agents/{layer-guardian,perf-reviewer}.md` |
 | Hooks | 生命周期脚本 | `.cursor/hooks.json` + `.cursor/scripts/hooks/*.js` |
-| MCP | 外部工具/数据 | `.cursor/mcp.json`（token 走 `.env`）|
+| MCP | 外部工具/数据 | `.cursor/mcp.json`（官方远程 github + filesystem；见 `MCP-GitHub启用说明.md`）|
 | Plugins | 打包分发 | `.cursor-plugin/plugin.json` |
 
 ## 全景自检清单
@@ -33,7 +33,7 @@ L1~L2（定制体系）：
 - [ ] 能说清七组件各自何时用
 
 L3~L4（SDK / 治理）：
-- [ ] 本地流式 Agent 跑通并读到 token（`npm run summarize`）
+- [ ] 本地流式 Agent 跑通并读到 token（`yarn summarize`）
 - [ ] headless 已加护栏（sandbox / autoReview / hooks）
 - [ ] 云端 `auto-fix.mjs` 能开 PR
 - [ ] `.cursor/rules` 已纳入版本控制；有 Team Rules + Plugin 分发方案

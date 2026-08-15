@@ -26,7 +26,7 @@ description: 在 TodosReactNative 按四层单向依赖架构新增一个完整�
 - 展示层无 `service`/`domain` 的 import（跑 `grep -rn "service\|domain" src/presentation` 应为空匹配）。
 - thunk 泛型第三项为 `{ rejectValue: AppError }`，无 `any`。
 - 组件 `React.memo` + 稳定 `keyExtractor`。
-- `npx eslint .` 与 `npx tsc --noEmit` 无新增报错。
+- `yarn eslint .` 与 `yarn tsc --noEmit` 无新增报错。
 - 若加了页面：`App.tsx` 已 `lazyScreen` 注册且 `RouteConfig` 有常量。
 
 ## 何时不建 domain 层

@@ -23,9 +23,9 @@
 ## 运行
 
 ```bash
-cd automation && npm install && export CURSOR_API_KEY=...
-npm run summarize
-npm run gen-slice -- "Comment 评论功能：列表 + 新增"
+cd automation && yarn install && export CURSOR_API_KEY=...
+yarn summarize
+yarn gen-slice -- "Comment 评论功能：列表 + 新增"
 ```
 
 检验：终端看到流式输出并拿到最终文本与 token；云端 run 在 Agents Window（Filter→Source→SDK）可见。
