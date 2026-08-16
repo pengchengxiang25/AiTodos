@@ -16,8 +16,11 @@ if (!repoUrl) {
 }
 
 async function autoFix() {
+  // 不用 `await using`：该语法要 Node 24+，CI 的 Node 22 会直接抛 SyntaxError。
+  // 这里手动在 finally 里释放，等价语义且不依赖运行时版本。
+  let agent;
   try {
-    await using agent = await Agent.create({
+    agent = await Agent.create({
       apiKey,
       model: await pickModel(),
       cloud: {
@@ -44,6 +47,8 @@ async function autoFix() {
     }
     // 依据 isRetryable 决定是否重试（此处仅抛出，交由 CI 重试策略）
     throw err;
+  } finally {
+    await agent?.[Symbol.asyncDispose]?.();
   }
 }
 
