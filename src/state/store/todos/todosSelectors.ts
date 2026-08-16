@@ -116,7 +116,7 @@ export const selectFilterCount = createSelector(
         const pred = filterPredicate[filter];
         return ids.filter(id => {
             const todo = todosById[id];
-            return todo && !pred(todo.completed);
+            return todo && pred(todo.completed);
         }).length;
     }
 );
