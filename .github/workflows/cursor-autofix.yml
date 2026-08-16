@@ -1,0 +1,38 @@
+name: cursor-auto-fix
+
+# CI 失败后触发：用 Cursor SDK 云端 Agent 定位根因、修复并自动开 PR（L5 端到端）。
+# 注意：workflow_run 执行的是默认分支（main）上的本文件与 checkout 到的脚本。
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+jobs:
+  auto-fix:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+          cache-dependency-path: automation/yarn.lock
+      - name: Install SDK
+        working-directory: automation
+        run: yarn install
+      - name: Run auto-fix
+        working-directory: automation
+        env:
+          # 用团队 Service Account key，计费归团队（在仓库 Secrets 配置）
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          REPO_URL: ${{ github.event.repository.html_url }}
+          # 把真正失败的分支传给 Agent，避免写死 main
+          TARGET_REF: ${{ github.event.workflow_run.head_branch }}
+          FAILURE_LOG: |
+            分支 ${{ github.event.workflow_run.head_branch }} 的 CI 失败。
+            提交：${{ github.event.workflow_run.head_sha }}
+            运行详情：${{ github.event.workflow_run.html_url }}
+        run: node auto-fix.mjs
